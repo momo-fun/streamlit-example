@@ -9,8 +9,8 @@ import numpy as np
 import datetime
 
 sym = "LINKUSDT"
-# url = f'https://api.binance.us/api/v3/trades?symbol={sym}&limit=500'
-url = f'https://fapi.binance.com/fapi/v1/trades?symbol={sym}&limit=1000'
+url = f'https://api.binance.us/api/v3/trades?symbol={sym}&limit=500'
+# url = f'https://fapi.binance.com/fapi/v1/trades?symbol={sym}&limit=1000'
 
 # extract tape data and analyse the data 
 transaction = requests.get(url).json()
