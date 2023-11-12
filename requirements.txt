@@ -5,5 +5,4 @@ plotly
 python-binance
 numpy
 datetime
-time
 
