@@ -2,7 +2,7 @@ altair
 pandas
 streamlit
 plotly
-binance-futures-connector
+requests
 numpy
 datetime
 
