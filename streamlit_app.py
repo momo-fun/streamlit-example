@@ -5,18 +5,73 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objs as go
 import streamlit as st
-
 from binance.um_futures import UMFutures
-import pandas as pd
 import numpy as np
 import datetime
-import math
 import time
-import matplotlib.pyplot as plt
 
 um_futures_client = UMFutures()
 sym = "LINKUSDT"
 
+
+# extract tape data and analyse the data 
+trans_all = pd.DataFrame()
+for i in range(0,1):
+    transaction = um_futures_client.trades(symbol=sym, limit=1000)  #max 1000
+    trans_df = pd.DataFrame(transaction,index=None)
+    trans_df['quoteQty']=trans_df['quoteQty'].astype(float)
+    trans_df['price']=trans_df['price'].astype(float)
+    trans_df['time']=trans_df['time'].astype(int)
+    trans_df = trans_df.sort_values('time', ascending=True).reset_index(drop=True)
+    trans_df['time']=trans_df['time'].apply(lambda d: datetime.datetime.fromtimestamp(int(d)/1000).strftime('%Y-%m-%d %H:%M:%S'))
+    trans_all = pd.concat([trans_all, trans_df], ignore_index=True)
+    time.sleep(50)
+    
+trans_all = trans_all.drop_duplicates()
+trans_all = trans_all.sort_values('time', ascending=True).reset_index(drop=True)
+cal_trans_df = trans_all[['price','time','isBuyerMaker','quoteQty']]
+grouped_df = cal_trans_df.groupby(['price', 'time','isBuyerMaker']).agg({'quoteQty': ['sum', 'size']})
+grouped_df = grouped_df.reset_index()
+grouped_df.columns = [' '.join(col).strip() for col in grouped_df.columns.values]
+grouped_df.loc[(grouped_df['isBuyerMaker']==True), 'filled_by'] = 'Seller'
+grouped_df.loc[(grouped_df['isBuyerMaker']==False), 'filled_by'] = 'Buyer'
+grouped_df = grouped_df.sort_values('time', ascending=True).reset_index(drop=True)
+print(grouped_df)
+
+seller_tape = grouped_df[grouped_df['filled_by'] == 'Seller']
+s_avg_p = (seller_tape['price'] * seller_tape['quoteQty sum']).sum()/seller_tape['quoteQty sum'].sum()
+s_num_t = seller_tape['quoteQty size'].sum()
+seller_tape = seller_tape[['time','quoteQty sum','quoteQty size']]
+seller_tape = seller_tape.rename(columns={'quoteQty sum':'seller_quoteQty','quoteQty size':'seller_num'})
+
+buyer_tape = grouped_df[grouped_df['filled_by'] == 'Buyer']
+b_avg_p = (buyer_tape['price'] * buyer_tape['quoteQty sum']).sum()/buyer_tape['quoteQty sum'].sum()
+b_num_t = buyer_tape['quoteQty size'].sum()
+buyer_tape = buyer_tape[['time','quoteQty sum','quoteQty size']]
+buyer_tape = buyer_tape.rename(columns={'quoteQty sum':'buyer_quoteQty','quoteQty size':'buyer_num'})
+
+seller_quoteQty = seller_tape['seller_quoteQty'].sum()
+print("Seller quoteQty:", seller_quoteQty, s_avg_p, s_num_t)
+buyer_quoteQty = buyer_tape['buyer_quoteQty'].sum()
+print("Buyer quoteQty:", buyer_quoteQty, b_avg_p, b_num_t)
+
+price_tape = grouped_df[['time','price']]
+price_tape = price_tape.drop_duplicates(subset='time', keep='first').reset_index(drop=True)
+time0 = price_tape['time'][0]
+time1 = price_tape['time'].iloc[-1]
+print("time:", time0, time1)
+
+merged_df = pd.merge(price_tape, seller_tape, on='time', how='left')
+merged_df = pd.merge(merged_df, buyer_tape, on='time', how='left')
+merged_df = merged_df.sort_values('time', ascending=True).reset_index(drop=True)
+time = merged_df['time']
+merged_df['buyer_quoteQty'] = merged_df['buyer_quoteQty'].fillna(0)
+merged_df['seller_quoteQty'] = merged_df['seller_quoteQty'].fillna(0)
+merged_df['diff_buyer_seller'] = merged_df['buyer_quoteQty'] - merged_df['seller_quoteQty']
+seller_quoteQty = merged_df['seller_quoteQty']
+buyer_quoteQty = merged_df['buyer_quoteQty']
+price = merged_df['price']
+diff_buyer_seller = merged_df['diff_buyer_seller'] 
 
 ############first chart for tape (trend and movement of buyer and seller)
 # Create bar trace for diff_buyer_seller
