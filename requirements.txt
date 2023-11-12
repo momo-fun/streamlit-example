@@ -2,7 +2,7 @@ altair
 pandas
 streamlit
 plotly
-binance.um_futures
+python-binance
 numpy
 datetime
 time
