@@ -8,14 +8,13 @@ import requests
 import numpy as np
 import datetime
 
-sym = "LINKUSDT"
-url = f'https://api.binance.us/api/v3/trades?symbol={sym}&limit=500'
+# sym = "LINKUSDT"
+# # url = f'https://api.binance.us/api/v3/trades?symbol={sym}&limit=500'
 # url = f'https://fapi.binance.com/fapi/v1/trades?symbol={sym}&limit=1000'
 
-# extract tape data and analyse the data 
-transaction = requests.get(url).json()
-print(transaction)
-# trans_df = pd.DataFrame(transaction)
+# # extract tape data and analyse the data 
+# transaction = requests.get(url).json()
+# trans_df = pd.DataFrame(transaction, index=None)
 
 # trans_df['quoteQty']=trans_df['quoteQty'].astype(float)
 # trans_df['price']=trans_df['price'].astype(float)
