@@ -2,3 +2,9 @@ altair
 pandas
 streamlit
 plotly
+math
+binance.um_futures
+numpy
+datetime
+time
+
