@@ -117,6 +117,10 @@ fig.add_trace(seller_quoteQty_trace, row=2, col=1)
 fig.add_trace(seller_num_trace, row=2, col=2)
 
 # Update yaxis properties
+qty_min = merged_df['buyer_quoteQty'].min()
+qty_max = merged_df['buyer_quoteQty'].max()
+num_min = merged_df['buyer_num'].min()
+num_max = merged_df['buyer_num'].max()
 fig.update_yaxes(range=[qty_min, qty_max], row=1, col=1)
 fig.update_yaxes(range=[num_min, num_max], row=1, col=2)
 fig.update_yaxes(range=[qty_min, qty_max], row=2, col=1)
