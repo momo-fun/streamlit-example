@@ -73,6 +73,7 @@ diff_buyer_seller = merged_df['diff_buyer_seller']
 
 ############first chart for tape (trend and movement of buyer and seller)
 # Create bar trace for diff_buyer_seller
+colors = ['red' if value < 0 else 'blue' for value in diff_buyer_seller]
 bar_trace = go.Bar(x=time, y=diff_buyer_seller, name='diff_buyer_seller', marker=dict(color=colors), opacity=0.5)
 
 # Create line trace for price
