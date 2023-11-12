@@ -7,7 +7,6 @@ import streamlit as st
 from binance.um_futures import UMFutures
 import numpy as np
 import datetime
-import time
 
 um_futures_client = UMFutures()
 sym = "LINKUSDT"
@@ -24,7 +23,7 @@ for i in range(0,1):
     trans_df = trans_df.sort_values('time', ascending=True).reset_index(drop=True)
     trans_df['time']=trans_df['time'].apply(lambda d: datetime.datetime.fromtimestamp(int(d)/1000).strftime('%Y-%m-%d %H:%M:%S'))
     trans_all = pd.concat([trans_all, trans_df], ignore_index=True)
-    time.sleep(50)
+    #time.sleep(50)
     
 trans_all = trans_all.drop_duplicates()
 trans_all = trans_all.sort_values('time', ascending=True).reset_index(drop=True)
