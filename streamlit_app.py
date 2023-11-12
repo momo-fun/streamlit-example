@@ -95,8 +95,7 @@ layout = go.Layout(
 fig = go.Figure(data=[bar_trace, line_trace], layout=layout)
 
 # Show the figure
-fig.show()
-
+st.plotly_chart(fig)
 
 ############second chart for 4 subplot
 from plotly.subplots import make_subplots
@@ -133,4 +132,4 @@ fig.update_layout(
 )
 
 # Show the figure
-fig.show()
+st.plotly_chart(fig)
