@@ -4,18 +4,18 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objs as go
 import streamlit as st
-from binance.um_futures import UMFutures
+import requests
 import numpy as np
 import datetime
 
-um_futures_client = UMFutures()
 sym = "LINKUSDT"
 
+url = f'https://api.binance.us/api/v3/trades?symbol={sym}&limit=1000'
 
 # extract tape data and analyse the data 
 trans_all = pd.DataFrame()
 for i in range(0,1):
-    transaction = um_futures_client.trades(symbol=sym, limit=1000)  #max 1000
+    transaction = requests.get(url).json()
     trans_df = pd.DataFrame(transaction,index=None)
     trans_df['quoteQty']=trans_df['quoteQty'].astype(float)
     trans_df['price']=trans_df['price'].astype(float)
