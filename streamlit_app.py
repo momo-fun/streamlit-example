@@ -14,7 +14,7 @@ url = f'https://fapi.binance.com/fapi/v1/trades?symbol={sym}&limit=1000'
 
 # extract tape data and analyse the data 
 transaction = requests.get(url).json()
-trans_df = pd.DataFrame(transaction,index=None)
+trans_df = pd.DataFrame(transaction)
 trans_df['quoteQty']=trans_df['quoteQty'].astype(float)
 trans_df['price']=trans_df['price'].astype(float)
 trans_df['time']=trans_df['time'].astype(int)
