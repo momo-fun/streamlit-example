@@ -2,7 +2,7 @@ altair
 pandas
 streamlit
 plotly
-python-binance
+python-binance==0.7.5
 numpy
 datetime
 
