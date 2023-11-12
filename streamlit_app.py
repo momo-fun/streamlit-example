@@ -13,17 +13,13 @@ sym = "LINKUSDT"
 url = f'https://fapi.binance.com/fapi/v1/trades?symbol={sym}&limit=1000'
 
 # extract tape data and analyse the data 
-trans_all = pd.DataFrame()
-for i in range(0,1):
-    transaction = requests.get(url).json()
-    trans_df = pd.DataFrame(transaction,index=None)
-    trans_df['quoteQty']=trans_df['quoteQty'].astype(float)
-    trans_df['price']=trans_df['price'].astype(float)
-    trans_df['time']=trans_df['time'].astype(int)
-    trans_df = trans_df.sort_values('time', ascending=True).reset_index(drop=True)
-    trans_df['time']=trans_df['time'].apply(lambda d: datetime.datetime.fromtimestamp(int(d)/1000).strftime('%Y-%m-%d %H:%M:%S'))
-    trans_all = pd.concat([trans_all, trans_df], ignore_index=True)
-    #time.sleep(50)
+transaction = requests.get(url).json()
+trans_df = pd.DataFrame(transaction,index=None)
+trans_df['quoteQty']=trans_df['quoteQty'].astype(float)
+trans_df['price']=trans_df['price'].astype(float)
+trans_df['time']=trans_df['time'].astype(int)
+trans_df = trans_df.sort_values('time', ascending=True).reset_index(drop=True)
+trans_df['time']=trans_df['time'].apply(lambda d: datetime.datetime.fromtimestamp(int(d)/1000).strftime('%Y-%m-%d %H:%M:%S'))
     
 trans_all = trans_all.drop_duplicates()
 trans_all = trans_all.sort_values('time', ascending=True).reset_index(drop=True)
